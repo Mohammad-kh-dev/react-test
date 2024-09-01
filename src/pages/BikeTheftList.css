@@ -1,33 +1,66 @@
-
 .container {
     margin: 20px auto;
     padding: 20px;
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
 }
 
 h1 {
+    text-align: center;
+    font-size: 2rem;
     margin-bottom: 20px;
 }
 
 ul {
     list-style-type: none;
     padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
 }
 
-li {
-    margin-bottom: 15px;
-    padding: 15px;
+.bike-theft-item {
+    padding: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
     background: #f9f9f9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 350px; /* Ensure consistent item height */
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bike-theft-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 img {
     max-width: 100%;
-    height: auto;
+    height: 200px;
     border-radius: 5px;
+    display: block;
+}
+
+.description {
+    max-height: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    margin-bottom: auto;
+}
+
+.no-description {
+    font-style: italic;
+    color: #999;
 }
 
 button {

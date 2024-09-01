@@ -1,31 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import './BikeTheftList.css';
 import { FilterForm } from '../componets/FilterForm';
 import { Pagination } from '../componets/Pagination';
 import { BikeTheftItem } from '../componets/BikeTheftItem';
-
-interface BikeTheft {
-    id: number;
-    title: string;
-    description: string;
-    date_of_theft: string;
-    date_reported: string;
-    location: string;
-    picture?: string;
-}
-
-export const BikeTheftList: React.FC = () => {
-    const [thefts, setThefts] = useState<BikeTheft[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
-    const [page, setPage] = useState<number>(1);
-    const [filter, setFilter] = useState<{ title: string; startDate: string; endDate: string }>({
-        title: '',
-        startDate: '',
-        endDate: '',
-    });
+import { useBikeThefts } from '../hooks/useBikeThefts';
 
  
+
+export const BikeTheftList: React.FC = () => {
+    const { thefts, loading, error, page,setPage, setFilter } = useBikeThefts();
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
