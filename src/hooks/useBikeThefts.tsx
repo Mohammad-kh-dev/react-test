@@ -9,8 +9,12 @@ interface BikeTheft {
     large_img?: string;
     year?: number;
 }
+const perPage: number = 10;
+const location: string = '77.184.79.28';
+
 export const useBikeThefts = () => {
     const [thefts, setThefts] = useState<BikeTheft[]>([]);
+    const [filteredThefts, setFilteredThefts] = useState<BikeTheft[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [page, setPage] = useState<number>(1);
@@ -19,8 +23,7 @@ export const useBikeThefts = () => {
         startDate: '',
         endDate: '',
     });
-    const perPage: number = 10;
-    const location: string = '77.184.79.28';
+   
 
     useEffect(() => {
         const fetchThefts = async () => {
@@ -29,6 +32,7 @@ export const useBikeThefts = () => {
                 const response = await fetch(`https://bikeindex.org:443/api/v3/search?page=${page}&per_page=${perPage}&location=${location}&distance=10&stolenness=proximity`);
                 const data = await response.json();
                 setThefts(data.bikes);
+                setFilteredThefts(data.bikes);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'An error occurred');
             } finally {
@@ -36,7 +40,52 @@ export const useBikeThefts = () => {
             }
         };
         fetchThefts();
-    }, [page, filter]);
+    }, [page]);
+    useEffect(() => {
+        // Apply local filtering based on title, startDate, and endDate
+        const filtered = thefts.filter(theft => {
+            const matchesTitle = theft.title.toLowerCase().includes(filter.title.toLowerCase());
 
-    return { thefts, loading, error, page,setPage, setFilter }; // Return the state and setters
+            const matchesStartDate = !filter.startDate || new Date(theft.date_stolen * 1000) >= new Date(filter.startDate);
+
+            const matchesEndDate = !filter.endDate || new Date(theft.date_stolen * 1000) <= new Date(filter.endDate);
+
+            return matchesTitle && matchesStartDate && matchesEndDate;
+        });
+
+        setFilteredThefts(filtered);
+    }, [filter, thefts]);
+
+    return { thefts, loading, error, page,setPage, setFilter,filteredThefts }; // Return the state and setters
+};
+
+export const useBikeTheftCount = () => {
+    const [totalCount, setTotalCount] = useState<number | null>(null);
+    const [loadingCount, setLoadingCount] = useState<boolean>(true);
+    const [errorCount, setErrorCount] = useState<string | null>(null);
+    
+    console.log(totalCount)
+
+    useEffect(() => {
+        const fetchTheftCount = async () => {
+            setLoadingCount(true);
+            setErrorCount(null);
+            try {
+                const response = await fetch(
+                    `https://bikeindex.org:443/api/v3/search/count?location=${location}&stolenness=proximity`
+                );
+                const data = await response.json();
+                const total = data.stolen + data.non + data.proximity;
+                setTotalCount(total);
+            } catch (err) {
+                setErrorCount(err instanceof Error ? err.message : 'An unknown error occurred');
+            } finally {
+                setLoadingCount(false);
+            }
+        };
+
+        fetchTheftCount();
+    }, []);
+
+    return { totalCount, loadingCount, errorCount };
 };

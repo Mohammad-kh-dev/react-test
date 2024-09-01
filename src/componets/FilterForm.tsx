@@ -8,7 +8,7 @@ export const FilterForm: React.FC<FilterFormProps> = ({ setFilter }) => {
     const [title, setTitle] = useState<string>('');
     const [startDate, setStartDate] = useState<string>('');
     const [endDate, setEndDate] = useState<string>('');
-
+    
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setFilter({ title, startDate, endDate });
