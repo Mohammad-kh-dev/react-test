@@ -1,5 +1,6 @@
 import React from 'react';
-
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 interface BikeTheft {
     id: number;
     title: string;
@@ -32,7 +33,7 @@ export const BikeTheftItem: React.FC<BikeTheftItemProps> = ({ theft }) => {
             <p>Date of Theft: {formatDate(theft.date_stolen)}</p>
             {theft.date_reported && <p>Reported On: {formatDate(theft.date_reported)}</p>}
             <p>Location: {theft.stolen_location}</p>
-            {theft.large_img && <img src={theft.large_img} alt="Bike" />}
+            {theft.large_img && <LazyLoadImage src={theft.large_img} alt="Bike"  effect="blur"/>}
         </li>
     );
 };
